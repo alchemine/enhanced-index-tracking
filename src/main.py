@@ -3,8 +3,12 @@ from Interface.Interface import *
 
 
 parser = ArgumentParser()
-parser.add_argument("--CMD", default="save_data")
-parser.add_argument("--SERVER_ID", default="26037", type=int)
+parser.add_argument("--cmd", default="invest")
+parser.add_argument("--server_id", default="26037")
+
+parser.add_argument("--start_date", default="2016-01-01")
+parser.add_argument("--end_date", default="2021-01-01")
+parser.add_argument("--universe", default="13")
 
 
 if __name__ == '__main__':

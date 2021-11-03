@@ -34,6 +34,7 @@ from dask import delayed, compute
 from dask.distributed import Client
 from switch import Switch
 from parse import parse, search
+import pymysql
 
 
 ## Plot packages
@@ -62,3 +63,7 @@ pd.set_option('display.width', 1000)
 ### Set signal handler
 from Env.SignalHandler import *
 SignalHandler.register_signal(signal.SIGINT)
+
+
+### Set Logger
+from Env.Logger import *

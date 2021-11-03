@@ -1,9 +1,4 @@
-### main.py ###################################
-# Main procedure is started in here
-###############################################
-
-
-from util import *
+from env.util import *
 
 
 if __name__ == '__main__':

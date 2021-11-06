@@ -1,0 +1,60 @@
+@startuml
+autonumber
+
+actor Client as C
+boundary Interface as I
+control PortfolioManager as PM
+entity Engine as E
+control DataManager as DM
+database Database as DB
+
+
+C -> I ++: run
+    alt command == "experiment"
+        I -> PM ++: experiment
+            group Prepare data
+                PM -> PM ++: Prepare data
+                    PM -> DM ++: Request data
+                        DM -> DB ++: Request data
+                            return Raw data
+                        deactivate
+                deactivate
+            end
+
+            loop until the last test date
+                group Train
+                    PM -> E ++: **Train**: Request optimal portfolio
+                        E -> DM ++: Preprocess raw data
+                            return Processed data
+
+                        group Compute optimal portfolio
+                            E -> E ++: Compute optimal portfolio
+                            deactivate
+                        end
+                        return Optimal portfolio, train result
+                end
+
+                group Test
+                    PM -> E ++: **Test**: Invest with optimal portfolio
+                        E -> DM ++: Preprocess raw data
+                            return Processed data
+                        loop until stop condition is True
+                            group Invest day by day
+                                E -> E ++: Invest day by day
+                                deactivate
+                            end
+                        end
+                        return Test result
+                end
+
+                group Postprocessing
+                    PM -> PM ++: Postprocessing
+                        PM -> DB: Save results
+                    deactivate
+                end
+            end
+        deactivate
+    else
+        |||
+    end
+@enduml

@@ -93,45 +93,21 @@ def read_from_db(query, db_info):
     conn = pymysql.connect(**db_info)
     data = pd.read_sql(query, conn)
     conn.close()
-    return data
+    return data.astype(str)
 
 
 ### Dates
-def get_index_name(universe):
-    query = f"select name from pf_universe where id = {universe}"
-    return read_from_db(query, DB_INFO)['name'].values[0]
-def get_tables(universe):
-    index_name = get_index_name(universe)
-    return f"vw_stock_daily_{index_name}", f"vw_index_daily_{index_name}"
+get_tables = lambda universe: (f"vw_stock_daily_{get_index_name(universe)}", f"vw_index_daily_{get_index_name(universe)}")
+get_index_name = lambda universe: read_from_db(f"select name from pf_universe where id = {universe}", DB_INFO)['name'].values[0]
 def get_date_from_date(date, days, param):
     stock_table, _ = get_tables(param['universe'])
     padding_date = (pd.to_datetime(date) + pd.Timedelta(days=2*days)).strftime('%Y-%m-%d')
-
     if days >= 0:
-        query = f"""
-        select distinct(date)
-        from {stock_table}
-        where '{date}' < date and date < '{padding_date}'
-        order by date
-        limit {abs(days)}
-        """
+        cond = f"where '{date}' < date and date < '{padding_date}' order by date"
     else:
-        query = f"""
-        select distinct(date)
-        from {stock_table}
-        where '{padding_date}' < date and date < '{date}' 
-        order by date desc
-        limit {abs(days)} 
-        """
-    return read_from_db(query, DB_INFO)['date'].astype(str).values[-1]
+        cond = f"where '{padding_date}' < date and date < '{date}' order by date desc"
+    return read_from_db(f"select distinct(date) from {stock_table} {cond} limit {abs(days)}", DB_INFO)['date'].values[-1]
 def get_dates(start_date, end_date, param):
     stock_table, _ = get_tables(param['universe'])
-
-    prev_date = get_date_from_date(start_date, -2, param)
-    query = f"""
-    select distinct(date)
-    from {stock_table}
-    where date between '{prev_date}' and '{end_date}'
-    order by date
-    """
-    return read_from_db(query, DB_INFO)['date'].astype(str)
+    prev_date = get_date_from_date(start_date, -2, param)  # TODO: check starting before 2 days
+    return read_from_db(f"select distinct(date) from {stock_table} where date between '{prev_date}' and '{end_date}' order by date", DB_INFO)['date']

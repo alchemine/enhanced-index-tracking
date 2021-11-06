@@ -1,9 +1,8 @@
-from Env.util import *
 from Interface.Interface import *
 
 
 parser = ArgumentParser()
-parser.add_argument("--cmd", default="invest")
+parser.add_argument("--cmd", default="experiment")
 parser.add_argument("--server_id", default="26037")
 
 parser.add_argument("--start_date", default="2016-01-01")

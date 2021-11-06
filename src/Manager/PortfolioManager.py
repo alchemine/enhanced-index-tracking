@@ -10,8 +10,8 @@ class PortfolioManager:
 
     @L1
     def experiment(self):
-        ### 1. Prepare data
-        self.dm.prepare_data()
+        ### 1. Load data
+        self.dm.load_data()
 
         self.param['cur_date'] = self.param['start_date']
         while self.param['cur_date'] <= self.param['end_date']:

@@ -8,7 +8,7 @@ class DataManager:
         self.DBM = DBManager(DB_INFO)
 
     @L2
-    def prepare_data(self):
+    def load_data(self):
         ### 1. Load raw data
         for id, table in zip(['stock', 'index'], self.DBM.get_tables(self.param['universe'])):
             cache_path = join(PATH.INPUT, f"{id}_{self.DBM.get_index_name(self.param['universe'])}.ftr")

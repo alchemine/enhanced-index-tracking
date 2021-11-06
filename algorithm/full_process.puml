@@ -12,7 +12,7 @@ database Database as DB
 C -> I ++: run
     alt command == "experiment"
         I -> PM ++: experiment
-            group Prepare data
+            group Load data
                 PM -> DM ++: Request data
                     DM -> DB ++: Request data
                         return Raw data

@@ -13,12 +13,10 @@ C -> I ++: run
     alt command == "experiment"
         I -> PM ++: experiment
             group Prepare data
-                PM -> PM ++: Prepare data
-                    PM -> DM ++: Request data
-                        DM -> DB ++: Request data
-                            return Raw data
-                        deactivate
-                deactivate
+                PM -> DM ++: Request data
+                    DM -> DB ++: Request data
+                        return Raw data
+                    deactivate
             end
 
             loop until the last test date

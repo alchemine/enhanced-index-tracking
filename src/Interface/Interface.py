@@ -2,7 +2,6 @@ from Manager.PortfolioManager import *
 
 
 class Interface:
-    @L1
     def run(self, cmd, **param):
         tprint(param)
 

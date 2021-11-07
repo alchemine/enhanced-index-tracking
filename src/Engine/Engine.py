@@ -10,7 +10,8 @@ class Engine:
     @L2
     def train(self):
         ### 1. Preprocess data
-        data = self.process_data()
+        self.data = self.process_data()
+
 
     @L2
     def test(self):
@@ -18,4 +19,4 @@ class Engine:
 
     @L3
     def process_data(self):
-        self.dm.select_universe()
+        return self.dm.select_universe()

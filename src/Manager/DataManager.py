@@ -29,29 +29,38 @@ class DataManager:
         self.param['end_date']   = self.data['date'].iloc[-1]
     @L3
     def select_universe(self):
+        ## 1. Set date and index
         start_date = self.param['cur_date']
-        end_date   = self.get_date_from_date(self.param['cur_date'], self.param['train_days'])
-        end_date   = self.data['universe'].query(f"cdate < '{end_date}'")['cdate'].values[-1]
+        end_date   = self.get_date_from_date(self.param['cur_date'], self.param['train_days']-1)
 
-        ## 1. Remove Nan
+        ## 2. Remove Nan
         caps = self.data['cap'].loc[start_date:end_date].dropna(axis='columns', how='any')
 
-        ## 2. Select assets which are in 'cap' and 'universe'
+        ## 3. Select assets which are in 'cap' and 'universe'
         assets_cap = list(caps.columns)
-        assets_unv = self.data['universe'].query(f"cdate == '{end_date}'").sort_values('cap', ascending=False)['jongmok_code'].tolist()
+        end_date_unv = self.data['universe'].query(f"cdate <= '{end_date}'")['cdate'].values[-1]  # nearest date
+        assets_unv = self.data['universe'].query(f"cdate == '{end_date_unv}'").sort_values('cap', ascending=False)['jongmok_code'].tolist()
         assets     = [asset for asset in assets_unv if asset in assets_cap]
-        print(assets)
 
-        exit()
+        ## 4. Result data
+        data = {}
+        for key in [f"{data_id}_{type}" for data_id in ['stock', 'index'] for type in ['price', 'return', 'log_return']]:
+            data[key] = self.data[key].loc[start_date:end_date]
+            data[key] = data[key][assets] if 'stock' in key else data[key]
+        data['asset'] = assets  # sorted by cap
+        data['cap']   = caps[assets]
+        data['date']  = list(data['stock_price'].index)
+        return data
     ##########################################################
 
+    ''
     ### Utility method #######################################
     @L3
     def _load_price(self, base_price):
         ## 1. Get raw data
         for id, table in zip(['stock', 'index'], self.get_tables()):
             self.data[id] = self.DBM.load_data(cache_path=join(PATH.INPUT, f"{id}_{self.get_index_name()}.ftr"),
-                                               query=f"select * from {table}", sort='date', time_index='date')
+                                               query=f"select * from {table}", sort_col='date', time_col='date')
 
         ## 2. Select columns
         for id, df in self.data.items():
@@ -61,14 +70,11 @@ class DataManager:
         ## 3. Select dates
         for id, df in self.data.items():
             df.set_index('date', inplace=True)
-
-            # df.index = pd.to_datetime(df.index)  # TODO: necessary?
-            df.sort_index(inplace=True)
             self.data[id] = df.loc[self.param['start_date']:self.param['end_date']]
     @L3
     def _load_universe(self):
         self.data['universe'] = self.DBM.load_data(cache_path=join(PATH.INPUT, f"universe_{self.param['universe']}.ftr"),
-                                                   query=f"select * from pf_universe_slave where pf_universe_id = {self.param['universe']}", sort='cdate', time_index='cdate')
+                                                   query=f"select * from pf_universe_slave where pf_universe_id = {self.param['universe']}", sort_col='cdate', time_col='cdate')
         self.data['universe'] = self.data['universe'].query(f"'{self.param['start_date']}' <= cdate <= '{self.param['end_date']}'")[['jongmok_code', 'cdate', 'cap']]
     @L3
     def _preprocess(self):
@@ -91,11 +97,10 @@ class DataManager:
             self.data[f'{id}_price']      = self.data[id].pivot(columns='jongmok_code', values='price') if id == 'stock' else self.data[id]['price']
             self.data[f'{id}_return']     = self.data[f'{id}_price'].pct_change().fillna(0)
             self.data[f'{id}_log_return'] = self.data[f'{id}_return'].apply(lambda x: np.log(1 + x))
-        self.data['code'] = pd.Series(self.data['stock_price'].columns, dtype=str)
-        self.data['date'] = pd.Series(self.data['stock_price'].index, dtype=str)
+        self.data['code'] = pd.Series(self.data['stock_price'].columns)
+        self.data['date'] = pd.Series(self.data['stock_price'].index)
 
         del self.data['stock'], self.data['index']
-
     def get_date_from_date(self, date, days):
         return self.data['date'].iloc[self.data['date'].searchsorted(date)+days]
     def get_tables(self):

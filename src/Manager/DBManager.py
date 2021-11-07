@@ -8,11 +8,11 @@ class DBManager(metaclass=MetaSingleton):
         self.conn.close()
     def read(self, query):
         return pd.read_sql(query, self.conn)
-    def load_data(self, cache_path, query, sort=None, time_index=None):
+    def load_data(self, cache_path, query, sort_col=None, time_col=None):
         if not exists(cache_path):
-            self.read(query).to_feather(cache_path)
-        data = pd.read_feather(cache_path)
-        data = data.sort_values(sort, ignore_index=True) if sort else data
-        if time_index:
-            data[time_index] = data[time_index].astype(str)
-        return data
+            data = self.read(query)
+            data = data.sort_values(sort_col, ignore_index=True) if sort_col else data
+            if time_col:
+                data[time_col] = data[time_col].astype(str)
+            data.to_feather(cache_path)
+        return pd.read_feather(cache_path)

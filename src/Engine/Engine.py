@@ -9,9 +9,13 @@ class Engine:
 
     @L2
     def train(self):
-        pass
-
+        ### 1. Preprocess data
+        data = self.process_data()
 
     @L2
     def test(self):
         pass
+
+    @L3
+    def process_data(self):
+        self.dm.select_universe()

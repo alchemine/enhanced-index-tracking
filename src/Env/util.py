@@ -14,6 +14,9 @@ list_all   = lambda path: [(join(path, name), name) for name in sorted(os.listdi
 list_dirs  = lambda path: [(join(path, name), name) for name in sorted(os.listdir(path)) if isdir(join(path, name))]
 list_files = lambda path: [(join(path, name), name) for name in sorted(os.listdir(path)) if isfile(join(path, name))]
 
+dt2str = lambda dt: dt.strftime('%Y-%m-%d')
+str2dt = lambda s: pd.to_datetime(s).date()
+
 
 ### PATH
 class PATH:
@@ -51,40 +54,46 @@ class Timer(ContextDecorator):
         print(f"[Elapsed time] {self.name}: {elapsed_time:.2f}s ({elapsed_time/60:.2f}m)")
         return False
 def L1(fn):
-    name = f"L{Logger.n1}"
-    @Timer(name)
     @wraps(fn)
     def log(*args, **kwargs):
-        print_fn(1, name, args, fn)
-        return fn(*args, **kwargs)
-    Logger.n1 += 1
+        name = f"L{Logger.n1}"
+        with Timer(name):
+            print_fn(1, name, args, fn)
+            rst = fn(*args, **kwargs)
+            Logger.n1 += 1
+        print()
+        return rst
     return log
 def L2(fn):
-    name = f"L{Logger.n1}.{Logger.n2}"
-    @Timer(name)
     @wraps(fn)
     def log(*args, **kwargs):
-        print_fn(2, name, args, fn)
-        return fn(*args, **kwargs)
-    Logger.n2 += 1
+        name = f"L{Logger.n1}.{Logger.n2}"
+        with Timer(name):
+            print_fn(2, name, args, fn)
+            rst = fn(*args, **kwargs)
+            Logger.n2 += 1
+        print()
+        return rst
     return log
 def L3(fn):
-    name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}"
-    @Timer(name)
     @wraps(fn)
     def log(*args, **kwargs):
-        print_fn(3, name, args, fn)
-        return fn(*args, **kwargs)
-    Logger.n3 += 1
+        name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}"
+        with Timer(name):
+            print_fn(3, name, args, fn)
+            rst = fn(*args, **kwargs)
+            Logger.n3 += 1
+        return rst
     return log
 def L4(fn):
-    name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}.{Logger.n4}"
-    @Timer(name)
     @wraps(fn)
     def log(*args, **kwargs):
-        print_fn(4, name, args, fn)
-        return fn(*args, **kwargs)
-    Logger.n4 += 1
+        name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}.{Logger.n4}"
+        with Timer(name):
+            print_fn(4, name, args, fn)
+            rst = fn(*args, **kwargs)
+            Logger.n4 += 1
+        return rst
     return log
 
 

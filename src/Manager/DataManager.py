@@ -9,7 +9,7 @@ class DataManager:
         self.data = dict(stock=pd.DataFrame(), index=pd.DataFrame())
         self.DBM = DBManager(DB_INFO)
 
-    ### Main method ##########################################
+    ### Public method ########################################
     @L2
     def load_data(self, base_price='close'):
         ## 0. Check if PATH.INPUT is exist
@@ -31,7 +31,7 @@ class DataManager:
     def select_universe(self):
         ## 1. Set date and index
         start_date = self.param['cur_date']
-        end_date   = self.get_date_from_date(self.param['cur_date'], self.param['train_days']-1)
+        end_date   = self._get_date_from_date(self.param['cur_date'], self.param['train_days'] - 1)
 
         ## 2. Remove Nan
         caps = self.data['cap'].loc[start_date:end_date].dropna(axis='columns', how='any')
@@ -53,13 +53,14 @@ class DataManager:
         return data
     ##########################################################
 
+
     ''
-    ### Utility method #######################################
+    ### Private method #######################################
     @L3
     def _load_price(self, base_price):
         ## 1. Get raw data
-        for id, table in zip(['stock', 'index'], self.get_tables()):
-            self.data[id] = self.DBM.load_data(cache_path=join(PATH.INPUT, f"{id}_{self.get_index_name()}.ftr"),
+        for id, table in zip(['stock', 'index'], self._get_tables()):
+            self.data[id] = self.DBM.load_data(cache_path=join(PATH.INPUT, f"{id}_{self._get_index_name()}.ftr"),
                                                query=f"select * from {table}", sort_col='date', time_col='date')
 
         ## 2. Select columns
@@ -101,11 +102,10 @@ class DataManager:
         self.data['date'] = pd.Series(self.data['stock_price'].index)
 
         del self.data['stock'], self.data['index']
-    def get_date_from_date(self, date, days):
+    def _get_date_from_date(self, date, days):
         return self.data['date'].iloc[self.data['date'].searchsorted(date)+days]
-    def get_tables(self):
-        return f"vw_stock_daily_{self.get_index_name()}", f"vw_index_daily_{self.get_index_name()}"
-    def get_index_name(self):
+    def _get_tables(self):
+        return f"vw_stock_daily_{self._get_index_name()}", f"vw_index_daily_{self._get_index_name()}"
+    def _get_index_name(self):
         return self.DBM.read(f"select name from pf_universe where id = {self.param['universe']}")['name'].values[0]
     ##########################################################
-

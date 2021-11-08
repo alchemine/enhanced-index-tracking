@@ -6,7 +6,7 @@
 ### Internal packages
 import sys
 import os
-from argparse import ArgumentParser
+from argparse import ArgumentParser, ArgumentTypeError
 from os.path import join, isdir, isfile, exists, basename, dirname, split, abspath
 from datetime import datetime, timedelta
 from pytz import timezone

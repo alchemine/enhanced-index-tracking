@@ -18,6 +18,16 @@ list_files = lambda path: [(join(path, name), name) for name in sorted(os.listdi
 dt2str = lambda dt: dt.strftime('%Y-%m-%d')
 str2dt = lambda s: pd.to_datetime(s).date()
 
+def str2bool(s):
+    if isinstance(s, bool):
+        return s
+    if s.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif s.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise ArgumentTypeError('Boolean value expected.')
+
 
 ### PATH
 class PATH:

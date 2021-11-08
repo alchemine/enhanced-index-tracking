@@ -15,6 +15,7 @@ parser.add_argument("--train_days", default=120, type=int)
 parser.add_argument("--test_days", default=60, type=int)
 
 ## Engine parameter
+parser.add_argument("--GPU", default=True, type=bool)
 parser.add_argument("--K", default=20, type=int)
 parser.add_argument("--max_iter_GA", default=50, type=int)
 parser.add_argument("--n_pop_GA", default=2**20, type=int)
@@ -23,5 +24,8 @@ parser.add_argument("--seed", default=42, type=int)
 
 if __name__ == '__main__':
     param = parser.parse_args().__dict__
+    for key, val in param.items():
+        print(key, val, type(val))
+
     interface = Interface()
     interface.run(**param)

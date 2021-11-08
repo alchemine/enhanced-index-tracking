@@ -39,19 +39,19 @@ class Engine:
     @L
     def _select_optimal_portfolio(self):
         ## 1. Initialize portfolio with cap weight
-        pf = self._get_base_portfolio()
+        base_pf = self._get_base_portfolio()
 
         ## 2. Select portfolios
-        pfs = self._select_candidate_portfolios(pf)
+        pfs = self._select_candidate_portfolios()
 
     @L
     def _get_base_portfolio(self):
         ## Weight is initialized with the latest cap
         return Portfolio(assets=[range(self.param['N'])], weights=Weight([self.data['cap'][-1]]))
     @L
-    def _select_candidate_portfolios(self, pf):
+    def _select_candidate_portfolios(self):
         ## 1. Random sampling
-        pfs = self._generate_population()
+        pf = self._generate_population()
 
         ## 2. Genetic algorithm
         # geneticSolver = GeneticSolver(self.data, self.param)
@@ -60,7 +60,7 @@ class Engine:
     def _generate_population(self):
         assets  = self._generate_assets(shape=(self.param['n_pop_GA'], self.param['K']), n_asset_src=self.param['N'])
         weights = self._generate_weights(assets, self.data['cap'][-1])
-
+        return Portfolio(assets, weights)
     @staticmethod
     @L
     @njit(parallel=True)  # n_pop: 2^24 -> 74.42s (parallel=True: 7.76s)

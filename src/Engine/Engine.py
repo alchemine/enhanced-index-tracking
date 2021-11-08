@@ -41,14 +41,14 @@ class Engine:
         ## 1. Initialize portfolio with cap weight
         pf = self._initialize_portfolio()
 
-        # ## 2. Select portfolios
-        # pfs = self._select_portfolios(pf)
+        ## 2. Select portfolios
+        pfs = self._select_candidate_portfolios(pf)
 
     @L4
     def _initialize_portfolio(self):
         ## Weight is initialized with the latest cap
         return Portfolio(assets=[range(self.param['N'])], weights=NORMALIZE(Weight([self.data['cap'][-1]])))
-    # @L4
-    # def _select_portfolios(self, pf):
-    #     pass
+    @L4
+    def _select_candidate_portfolios(self, pf):
+        pass
     ########################################################################

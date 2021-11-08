@@ -27,7 +27,7 @@ class DataManager:
         ## 4. Adjust start_date, end_date to nearest business date
         self.param['start_date'] = self.data['date'].iloc[0]
         self.param['end_date']   = self.data['date'].iloc[-1]
-    @L3
+    @L4
     def select_universe(self):
         ## 1. Set date and index
         start_date = self.param['cur_date']
@@ -44,12 +44,13 @@ class DataManager:
 
         ## 4. Result data
         data = {}
+        data['date'] = np.array(self.data['stock_price'].index)
+        data['asset'] = np.array(assets)  # sorted by cap
+        data['cap']   = np.array(caps[assets], dtype=np.float32)
         for key in [f"{data_id}_{type}" for data_id in ['stock', 'index'] for type in ['price', 'return', 'log_return']]:
             data[key] = self.data[key].loc[start_date:end_date]
             data[key] = data[key][assets] if 'stock' in key else data[key]
-        data['asset'] = assets  # sorted by cap
-        data['cap']   = caps[assets]
-        data['date']  = list(data['stock_price'].index)
+            data[key] = np.array(data[key], dtype=np.float32)
         return data
     ##########################################################
 

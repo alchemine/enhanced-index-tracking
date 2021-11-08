@@ -23,7 +23,7 @@ C -> I ++: run
                 group Train
                     PM -> E ++: **Train**: Request optimal portfolio
                         E -> E ++: Process data
-                            E -> DM ++: Process data
+                            E -> DM ++: Select universe
                                 return Processed data
                         deactivate E
 
@@ -41,7 +41,7 @@ C -> I ++: run
                         loop until stop condition is True
                             group Invest day by day
                                 E -> E ++: Process data
-                                    E -> DM ++: Process data
+                                    E -> DM ++: Select universe
                                         return Processed data
                                 deactivate E
 

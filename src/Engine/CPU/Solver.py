@@ -5,5 +5,6 @@ class Solver:
     def __init__(self, id):
         self.id = id
 
-    def _obj(self, chrom):  # input: chromosome(portfolio)
-        return 1
+        ## Metrics
+        self.opt_fitness = []
+        self.avg_fitness = []

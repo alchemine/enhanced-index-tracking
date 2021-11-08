@@ -47,7 +47,7 @@ class Engine:
     @L
     def _get_base_portfolio(self):
         ## Weight is initialized with the latest cap
-        return Portfolio(assets=[range(self.param['N'])], weights=Weight([self.data['cap'][-1]]))
+        return Portfolio([range(self.param['N'])], Weight([self.data['cap'][-1]]), self.data, self.param)
     @L
     def _select_candidate_portfolios(self):
         ## 1. Random sampling
@@ -61,7 +61,7 @@ class Engine:
     def _generate_population(self):
         assets  = self._generate_assets(shape=(self.param['n_pop_GA'], self.param['K']), n_asset_src=self.param['N'])
         weights = self._generate_weights(assets, self.data['cap'][-1])
-        return Portfolio(assets, weights)
+        return Portfolio(assets, weights, self.data, self.param)
     @staticmethod
     @L
     @njit(parallel=True)  # n_pop: 2^24 -> 74.42s (parallel=True: 7.76s)

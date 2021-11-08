@@ -70,7 +70,7 @@ class Timer(ContextDecorator):
 def print_fn(name, args, fn):
     print(f"-> {name} ", end='')
     if len(args) > 0 and isinstance(args[0], object):
-        print(f"{fn.__module__.split('.')[1]}.", end='')
+        print(f"{fn.__module__.split('.')[-1]}.", end='')
     print(f"{fn.__name__}()")
 
 

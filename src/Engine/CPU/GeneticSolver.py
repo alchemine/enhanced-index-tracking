@@ -1,5 +1,4 @@
 from Engine.CPU.Solver import *
-from sko.GA import GA
 
 
 class GeneticSolver(Solver):
@@ -10,20 +9,18 @@ class GeneticSolver(Solver):
 
     ### Public method ######################################################
     @L
-    def run(self, pf):
-        ## 1. Initialize GA model
-        model = self._get_initialized_model()
+    def run(self, chroms):
+        self.chroms = chroms
+        for idx_iter in range(self.param['max_iter_GA']):
+            ## 1. Select parents
+            parents = self._select()
 
     ########################################################################
 
 
     ''
     ### Private method #####################################################
-    def _get_initialized_model(self):
-        model = GA(func=self._obj,
-                   n_dim=self.param['K'],
-                   size_pop=self.param['n_pop_GA'],
-                   max_iter=self.param['max_iter_GA'])
-        return model
+    def _select(self):
+        """Select top n_candidate chromosome"""
+        assets = self.chroms.assets
     ########################################################################
-

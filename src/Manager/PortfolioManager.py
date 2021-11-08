@@ -1,14 +1,15 @@
 from Manager.DataManager import *
 
-
 class PortfolioManager:
     def __init__(self, param):
         self.param  = param
         self.dm     = DataManager(param)
 
         ## Select Engine mode (CPU or GPU)
-        mode = 'GPU' if param['GPU'] else 'CPU'
-        Engine = __import__(f'Engine.{mode}.Engine', globals(), locals(), ['Engine'], 0).Engine
+        if param['GPU']:
+            from Engine.GPU.Engine import Engine
+        else:
+            from Engine.CPU.Engine import Engine
         self.engine = Engine(self.dm, param)
 
     @L

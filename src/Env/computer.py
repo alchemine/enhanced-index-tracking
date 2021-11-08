@@ -1,9 +1,7 @@
 from Env.env import *
 
 
-@njit(parallel=True)
-def NORMALIZE(mat):
-    mat = np.where(mat < 0, 0, mat)
-    for idx_r in range(len(mat)):
-        mat[idx_r] /= np.sum(mat[idx_r])
-    return mat
+@njit
+def NORMALIZE(arr):
+    arr = np.where(arr < 0, 0, arr)
+    return arr / np.sum(arr)

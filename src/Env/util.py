@@ -96,6 +96,16 @@ def L4(fn):
             Logger.n4 += 1
         return rst
     return log
+def L5(fn):
+    @wraps(fn)
+    def log(*args, **kwargs):
+        name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}.{Logger.n4}.{Logger.n5}"
+        with Timer(name):
+            print_fn(5, name, args, fn)
+            rst = fn(*args, **kwargs)
+            Logger.n5 += 1
+        return rst
+    return log
 
 
 ### Singleton superclass

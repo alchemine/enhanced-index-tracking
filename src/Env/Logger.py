@@ -25,6 +25,7 @@ class Logger:
     n2 = 1
     n3 = 1
     n4 = 1
+    n5 = 1
 
     def __init__(self, log_dir_path):
         self.log_dir_path = log_dir_path

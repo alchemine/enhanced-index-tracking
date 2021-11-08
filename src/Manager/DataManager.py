@@ -86,7 +86,7 @@ class DataManager:
         self.data['cap']   = self.data['stock'].pivot(columns='jongmok_code', values='cap').interpolate(method='linear', axis='index')
 
         ## 2. Drop NaN
-        for id in ['stock', 'index']:  # cap is processed in Engine
+        for id in ['stock', 'index']:  # cap is processed in CPU
             self.data[id].dropna('index', inplace=True)
 
         ## 3. Select duplicated dates between stock and index data

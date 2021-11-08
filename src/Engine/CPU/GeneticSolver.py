@@ -1,4 +1,4 @@
-from Engine.Solver import *
+from Engine.CPU.Solver import *
 from sko.GA import GA
 
 
@@ -9,10 +9,11 @@ class GeneticSolver(Solver):
         self.param = param
 
     ### Public method ######################################################
-    #@L5
-    def run(self, population):
+    @L
+    def run(self, pf):
         ## 1. Initialize GA model
         model = self._get_initialized_model()
+
     ########################################################################
 
 
@@ -23,6 +24,6 @@ class GeneticSolver(Solver):
                    n_dim=self.param['K'],
                    size_pop=self.param['n_pop_GA'],
                    max_iter=self.param['max_iter_GA'])
-        model.register()
+        return model
     ########################################################################
 

@@ -1,5 +1,5 @@
-from Engine.Portfolio import *
-from Engine.GeneticSolver import *
+from Engine.CPU.Portfolio import *
+from Engine.CPU.GeneticSolver import *
 
 
 class Engine:
@@ -54,8 +54,9 @@ class Engine:
         pf = self._generate_population()
 
         ## 2. Genetic algorithm
-        # geneticSolver = GeneticSolver(self.data, self.param)
-        # pfs = geneticSolver.run(pop)
+        geneticSolver = GeneticSolver(self.data, self.param)
+        pf = geneticSolver.run(pf)
+
     @L
     def _generate_population(self):
         assets  = self._generate_assets(shape=(self.param['n_pop_GA'], self.param['K']), n_asset_src=self.param['N'])

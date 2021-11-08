@@ -10,7 +10,7 @@ class DataManager:
         self.DBM = DBManager(DB_INFO)
 
     ### Public method ########################################
-    @L2
+    @L
     def load_data(self, base_price='close'):
         ## 0. Check if PATH.INPUT is exist
         generate_dir(PATH.INPUT)
@@ -27,7 +27,7 @@ class DataManager:
         ## 4. Adjust start_date, end_date to nearest business date
         self.param['start_date'] = self.data['date'].iloc[0]
         self.param['end_date']   = self.data['date'].iloc[-1]
-    @L4
+    @L
     def select_universe(self):
         ## 1. Set date and index
         start_date = self.param['cur_date']
@@ -57,7 +57,7 @@ class DataManager:
 
     ''
     ### Private method #######################################
-    @L3
+    @L
     def _load_price(self, base_price):
         ## 1. Get raw data
         for id, table in zip(['stock', 'index'], self._get_tables()):
@@ -73,12 +73,12 @@ class DataManager:
         for id, df in self.data.items():
             df.set_index('date', inplace=True)
             self.data[id] = df.loc[self.param['start_date']:self.param['end_date']]
-    @L3
+    @L
     def _load_universe(self):
         self.data['universe'] = self.DBM.load_data(cache_path=join(PATH.INPUT, f"universe_{self.param['universe']}.ftr"),
                                                    query=f"select * from pf_universe_slave where pf_universe_id = {self.param['universe']}", sort_col='cdate', time_col='cdate')
         self.data['universe'] = self.data['universe'].query(f"'{self.param['start_date']}' <= cdate <= '{self.param['end_date']}'")[['jongmok_code', 'cdate', 'cap']]
-    @L3
+    @L
     def _preprocess(self):
         ## 1. Impute missing values
         self.data['stock'] = self.data['stock'].interpolate(method='linear', axis='index')

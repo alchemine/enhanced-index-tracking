@@ -52,58 +52,34 @@ class Timer(ContextDecorator):
         return self
     def __exit__(self, *exc):
         elapsed_time = time() - self.start_time
-        print(f"[Elapsed time] {self.name}: {elapsed_time:.2f}s ({elapsed_time/60:.2f}m)")
+        if elapsed_time > 1:
+            print(f" * {self.name} [{elapsed_time:.2f}s]")  # ({elapsed_time/60:.2f}m)
         return False
-def L1(fn):
+
+
+def print_fn(name, args, fn):
+    print(f"-> {name} ", end='')
+    if len(args) > 0 and isinstance(args[0], object):
+        print(f"{fn.__module__.split('.')[1]}.", end='')
+    print(f"{fn.__name__}()")
+
+
+def L(fn):
     @wraps(fn)
     def log(*args, **kwargs):
-        name = f"L{Logger.n1}"
+        ## Enter
+        name = '.'.join([str(Logger.level_val[l]) for l in range(1, Logger.level+1)])
+        name = f"{name:<15}"
+        print_fn(name, args, fn)
+        Logger.level += 1  # dive into
+
+        ## Execute
         with Timer(name):
-            print_fn(1, name, args, fn)
             rst = fn(*args, **kwargs)
-            Logger.n1 += 1
-        print()
-        return rst
-    return log
-def L2(fn):
-    @wraps(fn)
-    def log(*args, **kwargs):
-        name = f"L{Logger.n1}.{Logger.n2}"
-        with Timer(name):
-            print_fn(2, name, args, fn)
-            rst = fn(*args, **kwargs)
-            Logger.n2 += 1
-        print()
-        return rst
-    return log
-def L3(fn):
-    @wraps(fn)
-    def log(*args, **kwargs):
-        name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}"
-        with Timer(name):
-            print_fn(3, name, args, fn)
-            rst = fn(*args, **kwargs)
-            Logger.n3 += 1
-        return rst
-    return log
-def L4(fn):
-    @wraps(fn)
-    def log(*args, **kwargs):
-        name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}.{Logger.n4}"
-        with Timer(name):
-            print_fn(4, name, args, fn)
-            rst = fn(*args, **kwargs)
-            Logger.n4 += 1
-        return rst
-    return log
-def L5(fn):
-    @wraps(fn)
-    def log(*args, **kwargs):
-        name = f"L{Logger.n1}.{Logger.n2}.{Logger.n3}.{Logger.n4}.{Logger.n5}"
-        with Timer(name):
-            print_fn(5, name, args, fn)
-            rst = fn(*args, **kwargs)
-            Logger.n5 += 1
+
+        ## Exit
+        Logger.level -= 1  # rise out
+        Logger.level_val[Logger.level] += 1
         return rst
     return log
 

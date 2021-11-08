@@ -8,7 +8,7 @@ class PortfolioManager:
         self.dm     = DataManager(param)
         self.engine = Engine(self.dm, param)
 
-    @L1
+    @L
     def experiment(self):
         ### 1. Load data
         self.dm.load_data()

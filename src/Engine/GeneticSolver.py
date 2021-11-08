@@ -9,7 +9,7 @@ class GeneticSolver(Solver):
         self.param = param
 
     ### Public method ######################################################
-    @L5
+    #@L5
     def run(self, population):
         ## 1. Initialize GA model
         model = self._get_initialized_model()

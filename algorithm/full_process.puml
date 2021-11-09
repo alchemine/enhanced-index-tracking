@@ -28,7 +28,7 @@ C -> I ++: run
                         deactivate E
 
                         group Compute optimal portfolio
-                                ==Complete (21/11/08)==
+                                ==Complete (21/11/09)==
                             E -> E ++: Compute optimal portfolio
                             deactivate
                         end

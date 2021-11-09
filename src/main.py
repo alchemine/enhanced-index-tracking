@@ -18,10 +18,11 @@ parser.add_argument("--test_days", default=60, type=int)
 parser.add_argument("--GPU", default=False, type=str2bool)
 parser.add_argument("--K", default=20, type=int)
 parser.add_argument("--max_iter_GA", default=50, type=int)
-parser.add_argument("--n_pop_GA", default=2**20, type=int)
-parser.add_argument("--n_candidate", default=2**20, type=int)
+parser.add_argument("--n_pop_GA", default=2**14, type=int)
+parser.add_argument("--n_candidate_GA", default=2**10, type=int)
 parser.add_argument("--seed", default=42, type=int)
 parser.add_argument("--fitness_fn", default='downside_risk')
+parser.add_argument("--maximize_fitness", default=True, type=str2bool)
 
 
 if __name__ == '__main__':

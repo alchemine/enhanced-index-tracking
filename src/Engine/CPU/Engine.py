@@ -43,12 +43,18 @@ class Engine:
 
         ## 2. Select portfolios
         pfs = self._select_candidate_portfolios()
+
+        # ## 3. Filter portfolios
+        # return self._filter_candidates(pfs)
+
     @L
     def _select_candidate_portfolios(self):
         ## 1. Random sampling
-        pf = Portfolio(self.data, self.param, shape=(self.param['n_pop_GA'], self.param['K']))
+        base_pf = Portfolio(self.data, self.param, shape=(self.param['n_pop_GA'], self.param['K']))
 
-        ## 2. Genetic algorithm
+        ## 2. Genetic-Evolutionary algorithm
         geneticSolver = GeneticSolver(self.data, self.param)
-        pf = geneticSolver.run(pf)
+        return geneticSolver.run(base_pf)
+    # @L
+    # def _filter_candidates(self, pfs):
     ########################################################################

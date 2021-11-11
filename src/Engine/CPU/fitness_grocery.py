@@ -35,3 +35,5 @@ def get_fitness_fn(data, param):
                     downside_return = np.where(pf_return > index_return, 0, pf_return - index_return)
                     fitnesses[idx_pf] = np.sqrt(np.mean(downside_return**2))
     return fn
+
+

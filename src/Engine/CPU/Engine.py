@@ -17,7 +17,9 @@ class Engine:
         self._process_data_param()
 
         ## 2. Generate portfolios
-        pf = self._select_optimal_portfolio()
+        optimal = self._select_optimal_portfolio()
+        print(optimal)
+
 
     @L
     def test(self):
@@ -39,20 +41,23 @@ class Engine:
     @L
     def _select_optimal_portfolio(self):
         ## 1. Initialize portfolio with cap weight
-        base_pf = Portfolio(self.data, self.param, shape=(1, self.param['N']))
+        base = Portfolio(self.data, self.param, shape=(1, self.param['N']))
 
         ## 2. Select portfolios
-        pfs = self._select_candidate_portfolios()
-        print(pfs)
+        candidates = self._select_candidate_portfolios()
 
-        # ## 3. Filter portfolios
-        # return self._filter_candidates(pfs)
+        ## 3. Filter portfolios
+        optimal = self._filter_candidates(candidates)
+        return optimal
 
     @L
     def _select_candidate_portfolios(self):
         ## Genetic-Evolutionary algorithm
         geneticSolver = GeneticSolver(self.data, self.param)
         return geneticSolver.run()
-    # @L
-    # def _filter_candidates(self, pfs):
+
+    def _filter_candidates(self, pfs):
+        optimal_idx = filter(self.data, self.param, pfs)
+        pfs.select(optimal_idx)
+        return pfs
     ########################################################################

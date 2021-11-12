@@ -37,3 +37,15 @@ def get_fitness_fn(data, param):
     return fn
 
 
+def filter(data, param, pfs):
+    caps = data['cap'][-1]  # caps in last time-step
+
+    ## Selection
+    with Switch(param['filter']) as case:
+        if case('cap'):
+            def fn(assets, weights):
+                weighted_sum = np.sum(caps[assets] * weights, axis=1)
+                return np.argmax(weighted_sum)
+            return fn(pfs.assets, pfs.weights)
+        if case.default:
+            raise ValueError(f"Unknown filter: {param['filter']}")

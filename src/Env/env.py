@@ -17,6 +17,7 @@ from itertools import product
 from functools import wraps
 from time import time, sleep
 from collections import defaultdict
+from collections.abc import Iterable
 from copy import deepcopy as copy
 from tqdm import tqdm
 import shutil

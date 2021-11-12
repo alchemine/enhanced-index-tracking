@@ -1,4 +1,4 @@
-from Engine.CPU.fitness_grocery import *
+from Engine.CPU.computer import *
 
 ### Datatype ####################################################
 Asset   = lambda *shape: np.zeros(shape, dtype=np.uint8)
@@ -21,9 +21,10 @@ class Portfolio:
         self._initialize()
     def __repr__(self):
         NP, NA = self.assets.shape
+        n_pf = 3
+        l = list(range(n_pf)) + list(range(NP-n_pf, NP)) if NP >= 2*n_pf else range(NP)
         s = f"[# portfolio: {NP}, # asset: {NA}] \n"
-        n_pf = 3 if NP >= 6 else NP // 2
-        for idx_pf in list(range(n_pf)) + list(range(NP-n_pf, NP)):
+        for idx_pf in l:
             s += f"{idx_pf}: %s \n" % str({a: round(w, 2) for a, w in zip(self.assets[idx_pf], self.weights[idx_pf])})
         return s
 
@@ -41,6 +42,8 @@ class Portfolio:
         order = -1 if self.param['maximize_fitness'] else 1
         self.select(np.argsort(self.fitnesses)[::order][:n])
     def select(self, idxs):
+        if not isinstance(idxs, Iterable):
+            idxs = [idxs]  # keep dims
         self.assets    = self.assets[idxs]
         self.weights   = self.weights[idxs]
         self.fitnesses = self.fitnesses[idxs]

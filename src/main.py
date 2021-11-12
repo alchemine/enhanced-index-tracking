@@ -25,12 +25,14 @@ parser.add_argument("--n_pop_EV", default=2**18, type=int)
 parser.add_argument("--n_candidate_GA", default=2**10, type=int)
 parser.add_argument("--seed", default=42, type=int)
 parser.add_argument("--fitness_fn", default='downside_risk')
+parser.add_argument("--filter", default='cap')
 parser.add_argument("--maximize_fitness", default=False, type=str2bool)
 parser.add_argument("--mutation_rate_GA", default=0.1, type=float)
 parser.add_argument("--F", default=0.4, type=float)
 parser.add_argument("--weight_init_method_GA", default='cap')
 parser.add_argument("--weight_init_method_EV", default='weighted')
 parser.add_argument("--weight_init_threshold_EV", default=0.1, type=float)
+
 
 
 if __name__ == '__main__':

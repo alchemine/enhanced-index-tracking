@@ -17,7 +17,6 @@ list_files = lambda path: [(join(path, name), name) for name in sorted(os.listdi
 
 dt2str = lambda dt: dt.strftime('%Y-%m-%d')
 str2dt = lambda s: pd.to_datetime(s).date()
-
 def str2bool(s):
     if isinstance(s, bool):
         return s
@@ -27,6 +26,13 @@ def str2bool(s):
         return False
     else:
         raise ArgumentTypeError('Boolean value expected.')
+def generate_dir(path):
+    if not isdir(path):
+        os.makedirs(path)
+        print(f"[Inform] {path} is generated")
+def remove_dir(path):
+    if isdir(path):
+        shutil.rmtree(path)
 
 
 ### PATH
@@ -41,19 +47,12 @@ class PATH:
     RESULT = join(ROOT, 'result')
     LOG    = join(ROOT, 'log')
 
-def generate_dir(path):
-    if not isdir(path):
-        os.makedirs(path)
-        print(f"[Inform] {path} is generated")
-def remove_dir(path):
-    if isdir(path):
-        shutil.rmtree(path)
+    for dir in (CKPT, RESULT, LOG):
+        generate_dir(dir)
 
 
 ### Logger decorator
 logger = Logger(PATH.LOG)
-
-
 class Timer(ContextDecorator):
     def __init__(self, name='no_name', verbose=True):
         self.name = name
@@ -66,15 +65,11 @@ class Timer(ContextDecorator):
         if elapsed_time > 1 or self.verbose:
             print(f" * {self.name} [{elapsed_time:.2f}s]")  # ({elapsed_time/60:.2f}m)
         return False
-
-
 def print_fn(name, args, fn):
     print(f"-> {name} ", end='')
     if len(args) > 0 and isinstance(args[0], object):
         print(f"{fn.__module__.split('.')[-1]}.", end='')
     print(f"{fn.__name__}()")
-
-
 def L(fn):
     @wraps(fn)
     def log(*args, **kwargs):

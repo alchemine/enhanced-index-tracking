@@ -20,8 +20,10 @@ class PortfolioManager:
         self.param['cur_date'] = self.param['start_date']
         while self.param['cur_date'] <= self.param['end_date']:
             ### 2. Train
-            self.engine.train()
+            # results = self.engine.train()
+            # joblib.dump(results, join(PATH.CKPT, 'results.joblib'))
+            results = joblib.load(join(PATH.CKPT, "results.joblib"))
 
             ### 3. Test
-            self.engine.test()
+            self.engine.test(results)
             break

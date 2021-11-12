@@ -32,6 +32,7 @@ parser.add_argument("--F", default=0.4, type=float)
 parser.add_argument("--weight_init_method_GA", default='cap')
 parser.add_argument("--weight_init_method_EV", default='weighted')
 parser.add_argument("--weight_init_threshold_EV", default=0.1, type=float)
+parser.add_argument("--rebalancing_return_threshold", default=-0.05, type=float)
 
 
 

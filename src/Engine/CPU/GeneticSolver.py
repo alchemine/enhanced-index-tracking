@@ -19,7 +19,6 @@ class GeneticSolver(Solver):
 
 
     ### Public method ######################################################
-    @L
     def run(self):
         for idx_iter in tqdm(range(self.param['max_iter_GA'])):
             ## 1. Recombination

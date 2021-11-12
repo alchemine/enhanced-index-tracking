@@ -12,7 +12,6 @@ class Portfolio:
         self.data  = data
         self.param = param
         self.weight_init_method = weight_init_method
-        self.id: str
 
         self.assets    = Asset(*shape)
         self.weights   = Weight(*shape)
@@ -28,6 +27,12 @@ class Portfolio:
             s += f"{idx_pf}: %s \n" % str({a: round(w, 2) for a, w in zip(self.assets[idx_pf], self.weights[idx_pf])})
         return s
 
+    def to_dict(self):
+        return {
+            'assets': self.assets,
+            'weights': self.weights,
+            'fitnesses': self.fitnesses,
+        }
 
     ### Public method ###########################################
     def get(self):

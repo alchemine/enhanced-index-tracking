@@ -28,10 +28,11 @@ class DataManager:
         self.param['start_date'] = self.data['date'].iloc[0]
         self.param['end_date']   = self.data['date'].iloc[-1]
     @L
-    def select_universe(self):
-        ## 1. Set date and index
-        start_date = self.param['cur_date']
-        end_date   = self._get_date_from_date(self.param['cur_date'], self.param['train_days'] - 1)
+    def select_universe(self, start_date, end_date, universe_date):
+        if universe_date == 'start_date':
+            universe_date = start_date
+        elif universe_date == 'end_date':
+            universe_date = end_date
 
         ## 2. Remove Nan
         caps = self.data['cap'].loc[start_date:end_date].dropna(axis='columns', how='any')
@@ -44,14 +45,19 @@ class DataManager:
 
         ## 4. Result data
         data = {}
-        data['date'] = np.array(self.data['stock_price'].index)
-        data['asset'] = np.array(assets)  # sorted by cap
-        data['cap']   = np.array(caps[assets], dtype=np.float32)
         for key in [f"{data_id}_{type}" for data_id in ['stock', 'index'] for type in ['price', 'return', 'log_return']]:
             data[key] = self.data[key].loc[start_date:end_date]
             data[key] = data[key][assets] if 'stock' in key else data[key]
             data[key] = np.array(data[key], dtype=np.float32)
+
+        ## 5. Additional info
+        data['date']  = np.array(self.data['stock_price'].loc[start_date:end_date].index)
+        data['asset'] = np.array(assets)  # sorted by cap
+        data['cap']   = np.array(caps[assets], dtype=np.float32)
+        data['index_name'] = self._get_index_name()
         return data
+    def get_date_from_date(self, date, days):
+        return self.data['date'].iloc[self.data['date'].searchsorted(date)+days]
     ##########################################################
 
 
@@ -103,8 +109,6 @@ class DataManager:
         self.data['date'] = pd.Series(self.data['stock_price'].index)
 
         del self.data['stock'], self.data['index']
-    def _get_date_from_date(self, date, days):
-        return self.data['date'].iloc[self.data['date'].searchsorted(date)+days]
     def _get_tables(self):
         return f"vw_stock_daily_{self._get_index_name()}", f"vw_index_daily_{self._get_index_name()}"
     def _get_index_name(self):

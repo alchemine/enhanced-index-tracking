@@ -3,46 +3,44 @@ from Engine.CPU.EvolutionarySolver import *
 
 class GeneticSolver(Solver):
     def __init__(self, data, param):
-        super().__init__("GA")
+        super().__init__("GA", data, param)
         self.data  = data
         self.param = param
-
-        self.parents: Portfolio
-        self.childs:  Portfolio
 
         ## Metrics
         self.opt_fitnesses = []
         self.avg_fitnesses = []
 
+        ## 1. Initialization
+        self.parents = Portfolio(self.data, self.param, shape=(self.param['n_pop_GA'], self.param['K']))  # n_pop_GA
+        self.childs  = GAPortfolio(self.data, self.param)  # NP: n_pop_GA
+
         self.evolutionarySolver = EvolutionarySolver(self.data, self.param)
+
 
     ### Public method ######################################################
     @L
-    def run(self, parents):
-        self.parents = parents
-        self.childs  = GAPortfolio(self.data, self.param)
-
-        ## 1. Select parents
-        self._select()
-
+    def run(self):
         for idx_iter in tqdm(range(self.param['max_iter_GA'])):
-            ## 2. Recombination
+            ## 1. Recombination
             self._recombinate(self.parents.assets, self.childs.assets)
 
-            ## 3. Mutation
+            ## 2. Mutation
             self._mutate(self.childs.assets, self.param['mutation_rate_GA'], self.param['N'])
 
-            ## 4. Find optimal weights for selected assets
+            ## 3. Find optimal weights for selected assets
             self.evolutionarySolver.run(self.childs)
 
-            ## 5. Replace
-            self._replace(self.parents, self.childs, self.param['maximize_fitness'])
+            ## 4. Replace
+            self._replace(self.parents, self.childs)
 
-            ## Update
             self._update_fitness(self.childs.fitnesses)
-
-        ## Plot fitness
         self._plot_fitness()
+
+        ## 5. Select candidates
+        self._select()
+
+        return self.childs
     ########################################################################
 
 
@@ -51,6 +49,7 @@ class GeneticSolver(Solver):
     def _select(self):
         """Select top n_candidate chromosome"""
         self.parents.select_top(self.param['n_candidate_GA'])
+        self.childs = self.parents
     @staticmethod
     @njit  # (2.49s -> 0.77s / 1.05s)
     def _recombinate(parents, childs):

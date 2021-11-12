@@ -20,9 +20,10 @@ class Portfolio:
 
         self._initialize()
     def __repr__(self):
-        s = ""
-        n = len(self.assets)
-        for idx_pf in [0, 1, 2, n-3, n-2, n-1]:
+        NP, NA = self.assets.shape
+        s = f"[# portfolio: {NP}, # asset: {NA}] \n"
+        n_pf = 3 if NP >= 6 else NP // 2
+        for idx_pf in list(range(n_pf)) + list(range(NP-n_pf, NP)):
             s += f"{idx_pf}: %s \n" % str({a: round(w, 2) for a, w in zip(self.assets[idx_pf], self.weights[idx_pf])})
         return s
 

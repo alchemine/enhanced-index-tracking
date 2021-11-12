@@ -14,7 +14,8 @@ parser.add_argument("--universe", default=13, type=int)
 parser.add_argument("--train_days", default=120, type=int)
 parser.add_argument("--test_days", default=60, type=int)
 
-## CPU parameter
+## Engine parameter
+parser.add_argument("--debug", default=True, type=str2bool)
 parser.add_argument("--GPU", default=False, type=str2bool)
 parser.add_argument("--K", default=20, type=int)
 parser.add_argument("--max_iter_GA", default=5, type=int)

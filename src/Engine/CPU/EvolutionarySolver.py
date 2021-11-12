@@ -4,7 +4,7 @@ from Engine.CPU.Portfolio import *
 
 class EvolutionarySolver(Solver):
     def __init__(self, data, param):
-        super().__init__("EV")
+        super().__init__("EV", data, param)
         self.data  = data
         self.param = param
 
@@ -33,14 +33,13 @@ class EvolutionarySolver(Solver):
 
             ## 3. Replace
             self.trials.evaluate(update_weight=False)
-            self._replace(self.childs, self.trials, self.param['maximize_fitness'])
+            self._replace(self.childs, self.trials)
 
-            ## Update fitnesses
             self._update_fitness(self.childs.fitnesses)
+        self._plot_fitness()
 
         ## 4. Select optimal weights
         self._select()
-        self._plot_fitness()
     ########################################################################
 
 
